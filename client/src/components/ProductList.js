@@ -79,8 +79,10 @@ const ProductList=()=>{
                     <ProductItem key={product._id} product={product} />
                 ))}
             </ul>
-            <div className="buy-now-btn" onClick={()=>alert(`Your total is : ${totalPrice} `)}>Buy Now</div>
-        </div>
+            <button className="buy-now-btn" onClick={()=>alert(`Your total is : ${totalPrice} `)} style={{backgroundColor: "#218838",color:"white",marginRight:"78%",top:"65px",position:"absolute"}} onMouseEnter={(e) => e.target.style.backgroundColor = "#044612"}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = "#218838"}>Buy Now</button>
+            </div>
+        
     );
 };
 export default ProductList;

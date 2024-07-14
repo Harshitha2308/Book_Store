@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { itemContext } from "../context/ItemContext";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+// import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 
 const ProductItem=({product})=>{
@@ -24,7 +24,7 @@ const ProductItem=({product})=>{
             />
             <div className="product-details">
                 <h3 style={{fontWeight:"700"}}>{product.name}</h3>
-                <p style={{fontWeight:"300"}}>{product.description}</p>
+                <p style={{fontWeight:"300"}}>{product.description.split(" ").slice(0,7).join(" ")}</p>
                 <p style={{fontWeight:"500"}}>{product.price}</p>
                 <p>{product.genre}</p>
                 <p style={{fontWeight:"700",color:"brown"}}>
