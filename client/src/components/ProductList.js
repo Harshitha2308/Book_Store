@@ -67,6 +67,8 @@ const ProductList=()=>{
                         <option value="all">All</option>
                         <option value="Fiction">Fiction</option>
                         <option value="Dystopian">Dystopian</option>
+                        <option value="fantacy">Fantacy</option>
+                        <option value="Devotional">Devotional</option>
                         {/* Add more options as needed */}
                     </select>
                 </label>

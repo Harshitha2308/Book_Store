@@ -48,7 +48,7 @@ function CustomItemContext({children}){
     return (
         <itemContext.Provider
             value={{
-                products,addToCart,removeFromCart,itemsInCart,totalPrice
+                products,addToCart,removeFromCart,itemsInCart,totalPrice,cart
             }}
         >
             {children}

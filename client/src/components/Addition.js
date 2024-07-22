@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useState,useRef } from 'react'
 import './Addition.css'; 
 
 const Addition = () => {
@@ -10,13 +10,22 @@ const Addition = () => {
     const [description,setDescription]=useState("");
     const [price,setPrice]=useState(0);
     const [image,setImage]=useState("");
+    const fileInputRef = useRef(null); 
 
     const handleSubmit=async (e)=>{
         e.preventDefault();
+        const formData = new FormData();
+    formData.append('title', title);
+    formData.append('author', author);
+    formData.append('genre', genre);
+    formData.append('description', description);
+    formData.append('price', price);
+    formData.append('image', image);
         try{
-        const newbook={title,author,genre,description,price,image}
-        const response=await axios.post("http://localhost:4000/api/newbooks",newbook,{
-            headers: { "Content-Type": "application/json" },
+        
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        const response=await axios.post("http://localhost:4000/api/newbooks",formData,{
+            headers: {"Content-Type": "application/json","Authorization": `Bearer ${token}`  },
             withCredentials: true,
          } );
         if (response.status===201){alert('Book added successfully');
@@ -27,6 +36,9 @@ const Addition = () => {
             setDescription('');
             setPrice('');
             setImage('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''; // Reset the file input value
+              } 
         } else {
             alert('Failed to add book');
         }
@@ -91,11 +103,11 @@ const Addition = () => {
                 <div>
                     <label htmlFor="image">Image URL:</label>
                     <input 
-                        type="text" 
-                        id="image" 
-                        value={image} 
-                        onChange={(e) => setImage(e.target.value)} 
+                        type="file" 
+                        id="image"  
+                        onChange={(e) => setImage(e.target.files[0])} 
                         required 
+                        ref={fileInputRef}
                     />
                 </div>
                 <button type="submit">Submit</button>

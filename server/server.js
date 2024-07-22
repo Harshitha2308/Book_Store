@@ -13,6 +13,15 @@ const mongoUrl = "mongodb+srv://saiharshitha:Harshi2308!@cluster0.n01aeu1.mongod
 const secretKey = "yourSecretKey";
 mongoose.connect(mongoUrl);
 
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+      cb(null, `${Date.now()}-${file.originalname}`);
+    },
+  });
+  const upload = multer({ storage });
+  
+
 const bookSchema = new mongoose.Schema({
     title: String,
     author: String,
@@ -57,17 +66,7 @@ app.use(cors({
 }));
 app.use(express.json()); 
 app.use(cookieParser()); // Add this line to parse cookies
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage: storage });
-
+app.use('/uploads', express.static('uploads'));
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
     if (!token) {
@@ -96,9 +95,9 @@ app.get("/api/books", async (req, res) => {
     }
 });
 
-app.post("/api/newbooks", authenticateToken, async (req, res) => {
+app.post("/api/newbooks", authenticateToken,upload.single("image"),async (req, res) => {
     try {
-        const { title, author, genre, description, image, price } = req.body;
+        const { title, author, genre, description, price } = req.body;
         const newBook = new Book({ title, author, genre, description,  price,image: req.file ? `/uploads/${req.file.filename}` : '' });
         await newBook.save();
         res.status(201).json({ message: "user added books successfully" });
