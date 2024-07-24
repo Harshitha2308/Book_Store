@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Addition from './components/Addition';
 import './App.css';
+import SearchResults from './components/SearchResults';
 import CustomItemContext from './context/ItemContext';
 import AuthProvider from './context/AuthContext';
 import Cart from "./components/Cart";
@@ -26,6 +27,7 @@ const App = () => {
                         <Route path="/register" element={<Register />} />
                         <Route path="/home" element={<ProductList />} />
                         <Route path="/cart" element={<Cart />} />
+                        <Route path="/search" element={<SearchResults />} />
                     </Routes>
                 </Router>
             </AuthProvider>

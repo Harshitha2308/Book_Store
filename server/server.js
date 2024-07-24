@@ -94,6 +94,8 @@ app.get("/api/books", async (req, res) => {
         });
     }
 });
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 app.post("/api/newbooks", authenticateToken,upload.single("image"),async (req, res) => {
     try {

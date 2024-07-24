@@ -24,7 +24,7 @@ const ProductItem=({product})=>{
             />
             <div className="product-details">
                 <h3 style={{fontWeight:"700"}}>{product.name}</h3>
-                <p style={{fontWeight:"300"}}>{product.description.split(" ").slice(0,7).join(" ")}</p>
+                <p style={{fontWeight:"300"}}>{product.description.slice(0,15)}</p>
                 <p style={{fontWeight:"500"}}>{product.price}</p>
                 <p>{product.genre}</p>
                 <p style={{fontWeight:"700",color:"brown"}}>

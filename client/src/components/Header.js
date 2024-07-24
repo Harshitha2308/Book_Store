@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +9,7 @@ const Header = () => {
     const { itemsInCart } = useContext(itemContext);
     const { logged, logout } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleLogout = () => {
         logout();
@@ -17,11 +18,29 @@ const Header = () => {
     const handleclick=()=>{
         navigate("/cart");
     }
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/search?query=${searchQuery}`);
+        }
+    };
     return (
         <div className="header">
             <Link to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <h1 className="gfg">ALL Book Store</h1>
             </Link>
+            <div className="search-bar" style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                    type="text"
+                    placeholder="Search for books..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ padding: '5px', fontSize: '16px' }}
+                />
+                <button onClick={handleSearch} style={{ padding: '5px 10px', marginLeft: '10px' }}>
+                    Search
+                </button>
+            </div>
 
             <div className="cart-num" style={{ position: 'absolute', left: '10px', top: '10px' }}>
                 <div className="cart-items" onClick={handleclick}>{itemsInCart}</div>
