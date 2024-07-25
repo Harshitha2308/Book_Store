@@ -5,7 +5,7 @@ import { itemContext } from '../context/ItemContext';
 
 const SearchResults = () => {
     const [results, setResults] = useState([]);
-    const [loading, setLoading] = useState(true);
+
     const location = useLocation();
     const { addToCart, removeFromCart } = useContext(itemContext);
 
@@ -13,20 +13,20 @@ const SearchResults = () => {
 
     useEffect(() => {
         const fetchResults = async () => {
-            setLoading(true);
+          
             try {
                 const response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
                 setResults(response.data.items);
+                console.log(response.json)
             } catch (error) {
                 console.error('Error fetching search results:', error);
             }
-            setLoading(false);
+           
         };
 
         fetchResults();
     }, [query]);
 
-    if (loading) return <div>Loading...</div>;
 
     const handleAddToCart = (book) => {
         const product = {
@@ -46,9 +46,9 @@ const SearchResults = () => {
     };
 
     return (
-        <div>
+        <>
             <h2>Search Results for "{query}"</h2>
-            <div className="product-list">
+            
                 {results.map(book => (
                     <div className="product-card" key={book.id}>
                         <img
@@ -71,8 +71,8 @@ const SearchResults = () => {
                         </div>
                     </div>
                 ))}
-            </div>
-        </div>
+            
+        </>
     );
 };
 

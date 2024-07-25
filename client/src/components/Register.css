@@ -49,3 +49,12 @@ button {
 button:hover {
     background-color:#044612; /* Darker blue on hover */
 }
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* space between radio buttons */
+}
+
+.radio-group label {
+    margin-right: 15px;
+}

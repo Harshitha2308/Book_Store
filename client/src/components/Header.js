@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
     const { itemsInCart } = useContext(itemContext);
-    const { logged, logout } = useContext(AuthContext);
+    const { logged, logout ,role} = useContext(AuthContext);
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -48,9 +48,13 @@ const Header = () => {
             </div>
 
             <div className="auth-buttons" style={{ position: "absolute", right: "10px", top: "10px" }}>
-                {logged ? (
+                {logged ? (<>
+                    {role==="admin"&&(<Link to="/addition">
+                        <button className="addition-button">Add Book</button>
+                
+                    </Link>)}
                     <button className="logout-button" onClick={handleLogout} style={{ marginRight: "10px" }}>Logout</button>
-                ) : (
+                    </> ) : (
                     <>
                         <Link to="/login">
                             <button className="login-button" style={{ marginRight: "10px" }}>Login</button>
@@ -60,9 +64,7 @@ const Header = () => {
                         </Link>
                     </>
                 )}
-                <Link to="/addition">
-                    <button className="addition-button">Add Book</button>
-                </Link>
+                
             </div>
         </div>
     );

@@ -21,7 +21,7 @@ const Login = () => {
                 withCredentials: true
             });
             if (response.status === 200) {
-                login();
+                login(response.data.role);
                 navigate("/home");
             } else {
                 alert("Invalid credentials");

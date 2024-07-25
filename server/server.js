@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import path from "path";
+import { type } from "os";
 
 const app = express();
 const port = 4000;
@@ -35,7 +36,8 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true},
     password: { type: String, required: true },
-    phone: { type: String, required: true }
+    phone: { type: String, required: true },
+    role: {type:String, required:true }
 });
 
 const Book = mongoose.model("Book", bookSchema);
@@ -111,9 +113,9 @@ app.post("/api/newbooks", authenticateToken,upload.single("image"),async (req, r
 
 app.post("/api/register", async (req, res) => {
     try {
-        const { username, email, password, phone } = req.body;
+        const { username, email, password, phone ,role} = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, password: hashedPassword, phone });
+        const newUser = new User({ username, email, password: hashedPassword, phone ,role});
         await newUser.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
