@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { itemContext } from '../context/ItemContext';
-
+import "./SearchResults.css"
 const SearchResults = () => {
     const [results, setResults] = useState([]);
 
@@ -48,14 +48,14 @@ const SearchResults = () => {
     return (
         <>
             <h2>Search Results for "{query}"</h2>
-            
+            <div className="products-container">
                 {results.map(book => (
                     <div className="product-card" key={book.id}>
                         <img
                             className="product-image"
                             src={book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'placeholder.jpg'}
                             alt={book.volumeInfo.title}
-                        />
+                            />
                         <div className="product-details">
                             <h3 style={{fontWeight:"700"}}>{book.volumeInfo.title.slice(0,14)}</h3>
                             <p style={{fontWeight:"300"}}>{book.volumeInfo.description ? book.volumeInfo.description.slice(0,7) : 'No description available'}</p>
@@ -71,6 +71,8 @@ const SearchResults = () => {
                         </div>
                     </div>
                 ))}
+                
+                </div>
             
         </>
     );

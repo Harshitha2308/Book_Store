@@ -34,7 +34,7 @@ const Header = () => {
     };
     return (
         <div className="header">
-                <h1 className="gfg" onClick={handleHome} style={{ textDecoration: 'none', color: 'inherit' }}>ALL Book Store</h1>
+                <h1 className="gfg" onClick={handleHome} style={{ textDecoration: 'none',marginLeft:"170px", color: 'inherit' }}>ALL Book Store</h1>
             
             <div className="search-bar" style={{ display: 'flex', alignItems: 'center' }}>
                 <input
@@ -44,7 +44,7 @@ const Header = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ padding: '5px', fontSize: '16px' }}
                 />
-                <button onClick={handleSearch} style={{ padding: '5px 10px', marginLeft: '10px' }}>
+                <button onClick={handleSearch} style={{ padding: '5px 10px',marginRight:"110px" }}>
                     Search
                 </button>
             </div>
