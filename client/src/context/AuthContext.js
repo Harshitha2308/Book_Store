@@ -6,6 +6,7 @@ const AuthProvider = ({ children }) => {
     const [logged, setLogged] = useState(false);
     const [role ,setRole]=useState('');
     const login = (user) => {
+        console.log("User role set to:", user);
         setRole(user)
         setLogged(true)};
     const logout = () => {

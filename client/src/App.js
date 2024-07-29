@@ -21,7 +21,7 @@ const App = () => {
                 <Router>
                     <Header  />
                     <Routes>
-                        <Route path="/" element={<Navigate to="/register" />} />
+                        <Route path="/" element={<Navigate to="/login" />} />
                         <Route path="/addition" element={<Addition />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />

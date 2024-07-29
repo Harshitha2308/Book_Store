@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import axios from "axios";
 import './Login.css';
 import { AuthContext } from "../context/AuthContext";
@@ -12,7 +12,9 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        console.log("Username:", username);  // Debugging log
+    console.log("Password:", password);
+    
         try {
             const response = await axios.post("http://localhost:4000/api/login", { username, password }, {
                 headers: {
@@ -21,6 +23,8 @@ const Login = () => {
                 withCredentials: true
             });
             if (response.status === 200) {
+                console.log("Response data:", response.data); 
+                console.log("ole is ",response.data.role);
                 login(response.data.role);
                 navigate("/home");
             } else {
@@ -48,6 +52,7 @@ const Login = () => {
                 </div>
                 <button type="submit">Login</button>
             </form>
+            <h6 className="register-asking">Don't have an account...<Link to="/register">Register</Link></h6>
         </div>
     );
 };

@@ -10,13 +10,21 @@ const Header = () => {
     const { logged, logout ,role} = useContext(AuthContext);
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
-
+    console.log("Current role:", role);  // Debugging log
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
+    const handleHome=()=>{
+        if (logged){
+            navigate("/home")
+        }
+        else{navigate("/login")}
+    }
     const handleclick=()=>{
-        navigate("/cart");
+        if (logged){
+        navigate("/cart");}
+        else{navigate("/login")}
     }
     const handleSearch = (e) => {
         e.preventDefault();
@@ -26,9 +34,8 @@ const Header = () => {
     };
     return (
         <div className="header">
-            <Link to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <h1 className="gfg">ALL Book Store</h1>
-            </Link>
+                <h1 className="gfg" onClick={handleHome} style={{ textDecoration: 'none', color: 'inherit' }}>ALL Book Store</h1>
+            
             <div className="search-bar" style={{ display: 'flex', alignItems: 'center' }}>
                 <input
                     type="text"
