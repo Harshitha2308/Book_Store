@@ -7,6 +7,7 @@ function CustomItemContext({children}){
     const [cart,setCart]=useState([]);
     const [itemsInCart,setItemsInCart]=useState(0);
     const [totalPrice,setTotalPrice]=useState(0);
+    const [toRead,setToRead]=useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,6 +29,9 @@ function CustomItemContext({children}){
         setItemsInCart(itemsInCart+1);
     };
 
+    const wantToRead=(product)=>{
+        setToRead([...toRead,product])
+    }
     const removeFromCart=(product)=>{
         const index=cart.findIndex((prdt)=>prdt._id===product._id);
         console.log(index);
@@ -48,7 +52,7 @@ function CustomItemContext({children}){
     return (
         <itemContext.Provider
             value={{
-                products,addToCart,removeFromCart,itemsInCart,totalPrice,cart
+                products,addToCart,removeFromCart,itemsInCart,totalPrice,cart,wantToRead
             }}
         >
             {children}

@@ -147,3 +147,94 @@ app.post("/api/login", async (req, res) => {
 app.listen(port, () => {
     console.log(`server is running in port ${port}`);
 });
+
+
+
+
+// import React, { useEffect, useState, useContext } from 'react';
+// import axios from 'axios';
+// import { useLocation } from 'react-router-dom';
+// import { itemContext } from '../context/ItemContext';
+// import "./SearchResults.css";
+
+// const SearchResults = () => {
+//     const [results, setResults] = useState([]);
+//     const [error, setError] = useState('');  // Add error state
+
+//     const location = useLocation();
+//     const { addToCart, removeFromCart } = useContext(itemContext);
+
+//     const query = new URLSearchParams(location.search).get('query');
+
+//     useEffect(() => {
+//         const fetchResults = async () => {
+//             try {
+//                 const response = await axios.get(`https://openlibrary.org/search.json?q=${query}`);
+//                 setResults(response.data.docs);
+//                 setError(''); // Clear any previous error
+//             } catch (error) {
+//                 console.error('Error fetching search results:', error);
+//                 setError('An error occurred while fetching data. Please try again later.');
+//             }
+//         };
+
+//         fetchResults();
+//     }, [query]);
+
+//     const handleAddToCart = (book) => {
+//         const product = {
+//             id: book.key,  // Use book key from Open Library
+//             name: book.title,
+//             description: book.first_sentence ? book.first_sentence[0] : '',  // Adjust for Open Library
+//             price: 'N/A', // No price info available
+//             genre: book.subjects ? book.subjects.join(', ') : 'Unknown',
+//             author: book.author_name ? book.author_name.join(', ') : 'Unknown',
+//             image: book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : 'placeholder.jpg',
+//         };
+//         addToCart(product);
+//     };
+
+//     const handleRemoveFromCart = (book) => {
+//         removeFromCart(book.key);
+//     };
+
+//     return (
+//         <>
+//             <h2>Search Results for "{query}"</h2>
+
+//             {error && <div className="error-message">{error}</div>} {/* Display error message */}
+
+//             <div className="products-container">
+//                 {results.map(book => {
+//                     // Extract price if available, otherwise set default
+//                     const price = 299; // Default price
+
+//                     return (
+//                         <div className="product-card" key={book.key}>
+//                             <img
+//                                 className="product-image"
+//                                 src={book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : 'placeholder.jpg'}
+//                                 alt={book.title}
+//                             />
+//                             <div className="product-details">
+//                                 <h3 style={{ fontWeight: "700" }}>{book.title.slice(0, 14)}</h3>
+//                                 <p style={{ fontWeight: "300" }}>{book.first_sentence ? book.first_sentence[0].slice(0, 50) : 'No description available'}</p>
+//                                 <p style={{ fontWeight: "500" }}>{price}</p>
+//                                 <p>{book.subjects ? book.subjects.join(', ') : 'Unknown Genre'}</p>
+//                                 <p style={{ fontWeight: "700", color: "brown" }}>
+//                                     {book.author_name ? book.author_name.join(', ') : 'Unknown Author'}
+//                                 </p>
+//                                 <button onClick={() => handleAddToCart(book)}>
+//                                     Add to Cart
+//                                 </button>
+//                                 <button onClick={() => handleRemoveFromCart(book)}>-</button>
+//                             </div>
+//                         </div>
+//                     );
+//                 })}
+//             </div>
+//         </>
+//     );
+// };
+
+// export default SearchResults;

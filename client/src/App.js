@@ -10,16 +10,15 @@ import SearchResults from './components/SearchResults';
 import CustomItemContext from './context/ItemContext';
 import AuthProvider from './context/AuthContext';
 import Cart from "./components/Cart";
+import ToRead from './components/ToRead';
 
 
 const App = () => {
-    
-
     return (
         <CustomItemContext>
             <AuthProvider>
                 <Router>
-                    <Header  />
+                    <Header />
                     <Routes>
                         <Route path="/" element={<Navigate to="/login" />} />
                         <Route path="/addition" element={<Addition />} />
@@ -27,6 +26,7 @@ const App = () => {
                         <Route path="/register" element={<Register />} />
                         <Route path="/home" element={<ProductList />} />
                         <Route path="/cart" element={<Cart />} />
+                        <Route path="/wanttoread" element={<ToRead />} />
                         <Route path="/search" element={<SearchResults />} />
                     </Routes>
                 </Router>
@@ -34,5 +34,6 @@ const App = () => {
         </CustomItemContext>
     );
 };
+
 
 export default App;

@@ -4,7 +4,7 @@ import { itemContext } from "../context/ItemContext";
 
 
 const ProductItem=({product})=>{
-    const {addToCart,removeFromCart}=useContext(itemContext);
+    const {addToCart,removeFromCart,wantToRead}=useContext(itemContext);
     const handleAddToCart=(product)=>{
         console.log(product);
         addToCart(product);
@@ -14,6 +14,10 @@ const ProductItem=({product})=>{
         console.log("product removed",product);
         removeFromCart(product);
     };
+    const handleToRead=(product)=>{
+        console.log("wanted to read",product)
+        wantToRead(product)
+    }
 
     return(
         <div className="product-card">
@@ -30,6 +34,9 @@ const ProductItem=({product})=>{
                 <p style={{fontWeight:"700",color:"brown"}}>
                     {product.author}
                 </p>
+                <button onClick={()=> handleToRead(product)}>
+                    Want to Read
+                </button>
                 <button onClick={() => handleAddToCart(product)}>
                     Add to Cart
                 </button>
