@@ -15,8 +15,8 @@ import ToRead from './components/ToRead';
 
 const App = () => {
     return (
-        <CustomItemContext>
             <AuthProvider>
+        <CustomItemContext>
                 <Router>
                     <Header />
                     <Routes>
@@ -30,8 +30,8 @@ const App = () => {
                         <Route path="/search" element={<SearchResults />} />
                     </Routes>
                 </Router>
-            </AuthProvider>
         </CustomItemContext>
+            </AuthProvider>
     );
 };
 

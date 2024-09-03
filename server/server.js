@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import multer from "multer";
 import path from "path";
 import { type } from "os";
+import { error } from "console";
 
 const app = express();
 const port = 4000;
@@ -15,9 +16,11 @@ const secretKey = "yourSecretKey";
 mongoose.connect(mongoUrl);
 
 const storage = multer.diskStorage({
-    destination: './uploads/',
+    destination: (req, file, cb) => {
+        cb(null,'uploads/imges')
+        },
     filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
+      cb(null, file.filename + "_" + Date.now()+path.extname(file.originalname));
     },
   });
   const upload = multer({ storage });
@@ -34,11 +37,14 @@ const bookSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
-    email: { type: String, required: true},
+    email: { type: String, required: true },
     password: { type: String, required: true },
     phone: { type: String, required: true },
-    role: {type:String, required:true }
+    role: { type: String, required: true },
+    cart: [bookSchema],  // Array to store books added to the cart
+    toRead: [bookSchema] // Array to store books added to the "want to read" list
 });
+
 
 const Book = mongoose.model("Book", bookSchema);
 const User = mongoose.model("User", userSchema);
@@ -68,7 +74,7 @@ app.use(cors({
 }));
 app.use(express.json()); 
 app.use(cookieParser()); // Add this line to parse cookies
-app.use('/uploads', express.static('uploads'));
+app.use(express.static('uploads'));
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
     if (!token) {
@@ -135,106 +141,103 @@ app.post("/api/login", async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: "invalid password" });
         }
-        const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id, role: user.role }, secretKey, { expiresIn: '1h' });
         res.cookie('token', token, { httpOnly: true });
-        res.status(200).json({ message: "login successful" });
+        res.status(200).json({ message: "login successful",userId:user._id, role: user.role });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "error in logging" });
     }
 });
 
-app.listen(port, () => {
-    console.log(`server is running in port ${port}`);
+app.put("/api/add-to-read",authenticateToken,async(req,res)=>{
+    const {userId}=req.params
+    const {book}=req.body
+    try{
+        const user= await User.findById(userId)
+
+        if(!user){
+            return res.status(401).json({error:"user not found"})
+
+        }
+        user.toRead.push(book)
+
+        await user.save();
+        res.status(200).json({message:"updates sucess"})
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({ error: "Error updating want to read list" });
+    }
+})
+
+
+app.put("/api/add-to-cart/:userId",authenticateToken,async(req,res)=>{
+    const userId=req.params.userId
+    const {book}=req.body
+    console.log(book)
+    if (!book) {
+        return res.status(400).json({ error: "Book data is required" });
+    }
+    try{
+        const user= await User.findById(userId)
+
+        if(!user){
+            return res.status(401).json({error:"user not found"})
+
+        }
+        user.cart.push(book)
+
+        await user.save();
+        res.status(200).json({message:"updates sucess"})
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({ error: "Error updating list" });
+    }
+})
+
+app.delete("/api/remove-cart/:userId", authenticateToken, async (req, res) => {
+    const { userId } = req.params;
+    const { index } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(401).json({ error: "User not found" });
+        }
+
+        // Check if index is valid
+        if (index >= 0 && index < user.cart.length) {
+            user.cart.splice(index, 1);  // Remove the item from the cart array
+            await user.save();  // Save the updated user document
+
+            res.status(200).json({ message: "Item deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Item not found in cart" });
+        }
+    } catch (error) {
+        console.error("Error in deleting", error);
+        res.status(500).json({ error: "Error deleting item from cart" });
+    }
+});
+
+app.get("/api/to-read/:userId", authenticateToken, async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(401).json({ error: "User not found" });
+        }
+        res.status(200).json({ toRead: user.toRead });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error fetching 'To Read' list" });
+    }
 });
 
 
-
-
-// import React, { useEffect, useState, useContext } from 'react';
-// import axios from 'axios';
-// import { useLocation } from 'react-router-dom';
-// import { itemContext } from '../context/ItemContext';
-// import "./SearchResults.css";
-
-// const SearchResults = () => {
-//     const [results, setResults] = useState([]);
-//     const [error, setError] = useState('');  // Add error state
-
-//     const location = useLocation();
-//     const { addToCart, removeFromCart } = useContext(itemContext);
-
-//     const query = new URLSearchParams(location.search).get('query');
-
-//     useEffect(() => {
-//         const fetchResults = async () => {
-//             try {
-//                 const response = await axios.get(`https://openlibrary.org/search.json?q=${query}`);
-//                 setResults(response.data.docs);
-//                 setError(''); // Clear any previous error
-//             } catch (error) {
-//                 console.error('Error fetching search results:', error);
-//                 setError('An error occurred while fetching data. Please try again later.');
-//             }
-//         };
-
-//         fetchResults();
-//     }, [query]);
-
-//     const handleAddToCart = (book) => {
-//         const product = {
-//             id: book.key,  // Use book key from Open Library
-//             name: book.title,
-//             description: book.first_sentence ? book.first_sentence[0] : '',  // Adjust for Open Library
-//             price: 'N/A', // No price info available
-//             genre: book.subjects ? book.subjects.join(', ') : 'Unknown',
-//             author: book.author_name ? book.author_name.join(', ') : 'Unknown',
-//             image: book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : 'placeholder.jpg',
-//         };
-//         addToCart(product);
-//     };
-
-//     const handleRemoveFromCart = (book) => {
-//         removeFromCart(book.key);
-//     };
-
-//     return (
-//         <>
-//             <h2>Search Results for "{query}"</h2>
-
-//             {error && <div className="error-message">{error}</div>} {/* Display error message */}
-
-//             <div className="products-container">
-//                 {results.map(book => {
-//                     // Extract price if available, otherwise set default
-//                     const price = 299; // Default price
-
-//                     return (
-//                         <div className="product-card" key={book.key}>
-//                             <img
-//                                 className="product-image"
-//                                 src={book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : 'placeholder.jpg'}
-//                                 alt={book.title}
-//                             />
-//                             <div className="product-details">
-//                                 <h3 style={{ fontWeight: "700" }}>{book.title.slice(0, 14)}</h3>
-//                                 <p style={{ fontWeight: "300" }}>{book.first_sentence ? book.first_sentence[0].slice(0, 50) : 'No description available'}</p>
-//                                 <p style={{ fontWeight: "500" }}>{price}</p>
-//                                 <p>{book.subjects ? book.subjects.join(', ') : 'Unknown Genre'}</p>
-//                                 <p style={{ fontWeight: "700", color: "brown" }}>
-//                                     {book.author_name ? book.author_name.join(', ') : 'Unknown Author'}
-//                                 </p>
-//                                 <button onClick={() => handleAddToCart(book)}>
-//                                     Add to Cart
-//                                 </button>
-//                                 <button onClick={() => handleRemoveFromCart(book)}>-</button>
-//                             </div>
-//                         </div>
-//                     );
-//                 })}
-//             </div>
-//         </>
-//     );
-// };
-
-// export default SearchResults;
+app.listen(port, () => {
+    console.log(`server is running in port ${port}`);
+});

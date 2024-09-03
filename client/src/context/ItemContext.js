@@ -1,5 +1,6 @@
-import React, { createContext, useEffect, useState } from 'react'
-
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../context/AuthContext';
+import axios from "axios";
 export const itemContext=createContext();
 
 function CustomItemContext({children}){
@@ -8,6 +9,7 @@ function CustomItemContext({children}){
     const [itemsInCart,setItemsInCart]=useState(0);
     const [totalPrice,setTotalPrice]=useState(0);
     const [toRead,setToRead]=useState([]);
+    const {userId}=useContext(AuthContext)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,36 +25,64 @@ function CustomItemContext({children}){
         };
         fetchData();
       }, []);
-    const addToCart=(product)=>{
-        setTotalPrice(totalPrice+product.price);
-        setCart([...cart,product]);
-        setItemsInCart(itemsInCart+1);
+      const transformBookData = (book) => {
+        return {
+            title: book.name,  // Rename 'name' to 'title'
+            author: book.author,
+            genre: book.genre,
+            description: book.description,
+            price: book.price,
+            image: book.image
+        };
+    };
+    const addToCart=async (product)=>{
+        console.log(product)
+        const transformed=transformBookData(product)
+        try{
+            await axios.put(`http://localhost:4000/api/add-to-cart/${userId}`,{book: transformed},{
+                withCredentials: true // to include cookies
+            });
+            console.log(product)
+            setTotalPrice(totalPrice+product.price);
+            setCart([...cart,product]);
+            setItemsInCart(itemsInCart+1);
+        }
+        catch(error){
+            console.error('Error adding to cart:', error.response ? error.response.data : error.message);
+        }
     };
 
     const wantToRead=(product)=>{
         setToRead([...toRead,product])
     }
-    const removeFromCart=(product)=>{
+    const removeFromCart= async (product)=>{
         const index=cart.findIndex((prdt)=>prdt._id===product._id);
         console.log(index);
+        try{
 
-        if (index!==-1){
-            const updatedCart=[...cart];
-            updatedCart.splice(index,1);
-            setTotalPrice(totalPrice-cart[index].price);
-            setCart(updatedCart);
-            setItemsInCart(itemsInCart-1);
-
+            if (index!==-1){
+                const updatedCart=[...cart];
+                updatedCart.splice(index,1);
+                setTotalPrice(totalPrice-cart[index].price);
+                setCart(updatedCart);
+                setItemsInCart(itemsInCart-1);
+                await axios.delete(`http://localhost:4000/api/remove-cart/${userId}`,{data: { index }, // Include index in the data
+                    withCredentials: true
+                });
+            }
+            else{
+                console.log("item not found in cart");
+            }
+        }catch(error){
+            console.log(error)
         }
-        else{
-            console.log("item not found in cart");
-        }
+        
     }
 
     return (
         <itemContext.Provider
             value={{
-                products,addToCart,removeFromCart,itemsInCart,totalPrice,cart,wantToRead
+                products,addToCart,removeFromCart,itemsInCart,totalPrice,cart,wantToRead,toRead
             }}
         >
             {children}

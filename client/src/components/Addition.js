@@ -14,13 +14,14 @@ const Addition = () => {
 
     const handleSubmit=async (e)=>{
         e.preventDefault();
+        
         const formData = new FormData();
-    formData.append('title', title);
-    formData.append('author', author);
-    formData.append('genre', genre);
-    formData.append('description', description);
-    formData.append('price', price);
-    formData.append('image', image);
+        formData.append('title', title);
+        formData.append('author', author);
+        formData.append('genre', genre);
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('image', image);
         try{
         
         const token = localStorage.getItem('token'); // Retrieve the token from localStorage

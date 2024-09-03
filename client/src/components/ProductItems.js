@@ -23,7 +23,7 @@ const ProductItem=({product})=>{
         <div className="product-card">
             <img
             className="product-image"
-            src={product.image}
+            src={`http:localhost:4000/images/${product.image}`}
             alt={product.name}
             />
             <div className="product-details">

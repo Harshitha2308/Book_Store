@@ -12,8 +12,8 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Username:", username);  // Debugging log
-    console.log("Password:", password);
+    //     console.log("Username:", username);  // Debugging log
+    // console.log("Password:", password);
     
         try {
             const response = await axios.post("http://localhost:4000/api/login", { username, password }, {
@@ -23,9 +23,10 @@ const Login = () => {
                 withCredentials: true
             });
             if (response.status === 200) {
-                console.log("Response data:", response.data); 
-                console.log("ole is ",response.data.role);
-                login(response.data.role);
+                // console.log("Response data:", response.data); 
+                // console.log("ole is ",response.data.role);
+                const { userId, role } = response.data;
+                login({ userId, role });
                 navigate("/home");
             } else {
                 alert("Invalid credentials");
